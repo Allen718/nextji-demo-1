@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+/.idea/
+/.vscode/
+# 数据库
+/blog-data/
 # dependencies
 /node_modules
 /.pnp
