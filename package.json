@@ -2,10 +2,13 @@
    "name": "nextjs-blog-1",
    "private": true,
    "scripts": {
-      "dev": "next dev",
+      "dev": "next dev & babel -w ./src --out-dir dist --extensions .ts,.tsx",
       "build": "next build",
       "start": "next-start",
-      "lint": "next lint"
+      "lint": "next lint",
+      "typeorm:build":"babel ./src --out-dir dist --extensions .ts,.tsx",
+      "m:run":"typeorm migration:run",
+      "m:revert":"typeorm migration:revert"
    },
    "dependencies": {
       "@babel/cli": "^7.16.8",
