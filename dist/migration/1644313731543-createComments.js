@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CreatePost1643361986246 = void 0;
+exports.createComments1644313731543 = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -17,12 +17,12 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/creat
 
 var _typeorm = require("typeorm");
 
-var CreatePost1643361986246 = /*#__PURE__*/function () {
-  function CreatePost1643361986246() {
-    (0, _classCallCheck2["default"])(this, CreatePost1643361986246);
+var createComments1644313731543 = /*#__PURE__*/function () {
+  function createComments1644313731543() {
+    (0, _classCallCheck2["default"])(this, createComments1644313731543);
   }
 
-  (0, _createClass2["default"])(CreatePost1643361986246, [{
+  (0, _createClass2["default"])(createComments1644313731543, [{
     key: "up",
     value: function () {
       var _up = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(queryRunner) {
@@ -32,19 +32,32 @@ var CreatePost1643361986246 = /*#__PURE__*/function () {
               case 0:
                 _context.next = 2;
                 return queryRunner.createTable(new _typeorm.Table({
-                  name: "posts",
+                  name: "comments",
                   columns: [{
                     name: "id",
-                    type: "int",
-                    isPrimary: true,
                     isGenerated: true,
-                    generationStrategy: "increment"
+                    type: "int",
+                    generationStrategy: "increment",
+                    isPrimary: true
                   }, {
-                    name: "title",
-                    type: "varchar"
+                    name: "userId",
+                    type: "int"
                   }, {
-                    name: "content",
-                    type: "varchar"
+                    name: "postId",
+                    type: "int"
+                  }, {
+                    name: 'content',
+                    type: 'text'
+                  }, {
+                    name: 'createdAt',
+                    type: 'timestamp',
+                    isNullable: false,
+                    "default": 'now()'
+                  }, {
+                    name: 'updatedAt',
+                    type: 'timestamp',
+                    isNullable: false,
+                    "default": 'now()'
                   }]
                 }));
 
@@ -74,12 +87,9 @@ var CreatePost1643361986246 = /*#__PURE__*/function () {
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.next = 2;
-                return queryRunner.dropTable("posts");
+                return queryRunner.dropTable('comments');
 
               case 2:
-                return _context2.abrupt("return", _context2.sent);
-
-              case 3:
               case "end":
                 return _context2.stop();
             }
@@ -94,7 +104,7 @@ var CreatePost1643361986246 = /*#__PURE__*/function () {
       return down;
     }()
   }]);
-  return CreatePost1643361986246;
+  return createComments1644313731543;
 }();
 
-exports.CreatePost1643361986246 = CreatePost1643361986246;
+exports.createComments1644313731543 = createComments1644313731543;
