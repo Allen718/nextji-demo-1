@@ -8,8 +8,9 @@ const AddUser: NextApiHandler = async (req, res) => {
     const {username, password, passwordConfirm} = req.body
     const errors = {username: [] as string[], password: [] as string[], passwordConfirm: [] as string[]}
     const connection = await getDatabaseConnection();
-    const found = connection.manager.find('users', {username})
-    if (found) {
+    const found = await connection.manager.find('users', {username})
+    console.log(found,'found')
+    if (found.length>0) {
         errors.username.push('用户名已存在，不能重复注册')
     }
     if (username.trim() === '') {
