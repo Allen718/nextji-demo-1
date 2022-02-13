@@ -7,6 +7,11 @@ import {getDatabaseConnection} from "../../../lib/getDatabaseConnection";
 const AddUser: NextApiHandler = async (req, res) => {
     const {username, password, passwordConfirm} = req.body
     const errors = {username: [] as string[], password: [] as string[], passwordConfirm: [] as string[]}
+    const connection = await getDatabaseConnection();
+    const found = connection.manager.find('users', {username})
+    if (found) {
+        errors.username.push('用户名已存在，不能重复注册')
+    }
     if (username.trim() === '') {
         errors.username.push('用户名不能为空')
     }
@@ -26,13 +31,12 @@ const AddUser: NextApiHandler = async (req, res) => {
         errors.passwordConfirm.push('两次输入密码不一致');
     }
     const hasErrors = Object.values(errors).find(error => error.length > 0);
-    console.log('Object.keys(errors)',Object.keys(errors))
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     if (hasErrors) {
         res.statusCode = 422;
         res.write(JSON.stringify(errors))
     } else {
-        const connection = await getDatabaseConnection();
+
         const user = new User();
         user.username = username
         user.passwordDigest = md5(password);
