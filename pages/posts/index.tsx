@@ -24,7 +24,7 @@ const PostsIndex: NextPage<Props> = (props) => {
                 <a>{post.title}</a>
             </Link>)}
             <div>11222</div>
-            <h1>{`你现在使用的浏览器是222${browser.name}`}</h1>
+            <h1>{`你现在使用的浏览器是23322${browser.name}`}</h1>
         </div>
     )
 };
@@ -32,6 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const ua = context.req.headers['user-agent']
     const connection = await getDatabaseConnection()
     const posts = await connection.manager.find('posts');
+    //用于解析浏览器的一个插件库
     const result = new UAParser(ua).getResult()
     return {
         props: {

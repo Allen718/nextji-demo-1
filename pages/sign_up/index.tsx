@@ -1,7 +1,8 @@
 import React, {useCallback, useState} from "react";
 import axios, {AxiosResponse} from 'axios';
-
+import { useRouter } from 'next/router';
 export default () => {
+    const router = useRouter()
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -15,13 +16,18 @@ export default () => {
     const onSubmit = useCallback((e) => {
         e.preventDefault();
         axios.post(`/api/v1/AddUser`, formData)
-            .then(() => {}, (error) => {
+            .then((res) => {
+                if(res.status===200){
+                    router.push('/sign_in');
+                }
+
+            }, (error) => {
                 if (error.response) {
                     const response: AxiosResponse = error.response;
                     if (response.status === 422) {
                         console.log('response.data');
                         console.log(response.data);
-                        setErrors({...errors, ...response.data});
+                        setErrors({...response.data});
                     }
                 }
             });
@@ -29,7 +35,7 @@ export default () => {
     }, [formData])
     return (
         <div>
-            <h1>登陆页</h1>
+            <h1>hello 这是一个注册页面</h1>
             <form onSubmit={onSubmit}>
                 <div>
                     <label>
