@@ -1,7 +1,12 @@
 import {useCallback, useState} from "react";
 import axios, {AxiosResponse} from "axios";
 
-export default () => {
+import { withIronSessionSsr } from "iron-session/next";
+
+
+export default (props:{user:{}}) => {
+    const user=props.user;
+    console.log(user);
     const [formData, setFormData] = useState({username: '', password: ''})
     const [errors, setErrors] = useState({
         username: [],
@@ -54,3 +59,21 @@ export default () => {
     </div>
 }
 ;
+export const getServerSideProps = withIronSessionSsr(
+    async function getServerSideProps({ req }) {
+        const user = req.session.user;
+        return {
+            props: {
+                user: JSON.parse(JSON.stringify(req.session.user||{})),
+            },
+        };
+    },
+    {
+        cookieName: "blog",
+        password: "complex_password_at_least_32_characters_long",
+        // secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
+        cookieOptions: {
+            secure: process.env.NODE_ENV === "production",
+        },
+    },
+);
