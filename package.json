@@ -2,7 +2,7 @@
    "name": "nextjs-blog-1",
    "private": true,
    "scripts": {
-      "dev": "next dev & babel -w ./src --out-dir dist --extensions .ts,.tsx",
+      "dev": "next dev --port 3200 & babel -w ./src --out-dir dist --extensions .ts,.tsx",
       "build": "next build",
       "start": "next-start",
       "lint": "next lint",
@@ -38,6 +38,7 @@
       "eslint-config-next": "12.0.8",
       "file-loader": "^6.2.0",
       "next-images": "^1.8.4",
+      "qs": "^6.10.3",
       "typescript": "^4.5.5"
    }
 }
