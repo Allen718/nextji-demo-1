@@ -1,36 +1,94 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {GetServerSideProps, NextPage} from "next";
-
+import {withIronSessionSsr} from "iron-session/next";
+import marked from 'marked';
 import {Post} from '../../src/entity/Post';
 
-import {getPost,getIds} from "../../lib/posts";
+import {getPost, getIds} from "../../lib/posts";
 import {getDatabaseConnection} from "../../lib/getDatabaseConnection";
 
-type Props={
-    post:Post
+import {User} from "../../src/entity/User";
+import Link from 'next/link';
+import axios from "axios";
+import {useRouter} from "next/router";
+
+type Props = {
+    post: Post,
+    id:string,
+    currentUser: User | null;
 }
-const PostShow:NextPage<Props> = (props) => {
-    const {post} = props;
-    console.log(post);
-    return(
-        <div>
-            <h1>{post.title}</h1>
-            <article>
-                {post.content}
-            </article>
-        </div>
+const PostShow: NextPage<Props> = (props) => {
+    const {post, currentUser,id} = props;
+    const router=useRouter()
+  const onRemove=useCallback(()=>{
+      axios.delete(`/api/v1/posts/${id}`).then((res)=>{
+          window.alert('删除成功');
+          router.push('/posts')
+      },()=>{
+          window.alert('删除失败');
+      })
+  },[])
+    return (
+        <>
+            <div className="wrapper">
+                <header>
+                    <h1>{post.title}</h1>
+                    {currentUser &&
+                        <p>
+                            <Link href="/posts/[id]/edit" as={`/posts/${post.id}/edit`}><a>编辑</a></Link>
+                            <button onClick={onRemove}>删除</button>
+                        </p>
+                    }
+                </header>
+                <article className="markdown-body" dangerouslySetInnerHTML={{__html: marked(post.content)}}>
+                </article>
+            </div>
+            <style jsx>{`
+              .wrapper {
+                max-width: 800px;
+                margin: 16px auto;
+                padding: 0 16px;
+              }
+
+              h1 {
+                padding-bottom: 16px;
+                border-bottom: 1px solid #666;
+              }
+              button{
+              margin-left: 16px;
+              padding:4px 8px;
+              border-radius: 4px;
+              background-color: #fff;
+              border:1px solid black;
+              }
+            `}</style>
+        </>
     )
 
 };
-export const getServerSideProps: GetServerSideProps<any, { id: string }> = async (context) => {
-    const connection = await getDatabaseConnection();
-    const post = await connection.manager.findOne(Post, context.params.id);
-    return {
-        props: {
-            post: JSON.parse(JSON.stringify(post))
-        }
-    };
-};
+export const getServerSideProps = withIronSessionSsr(
+    async function getServerSideProps({req, params}) {
+        const connection = await getDatabaseConnection();
+        const post = await connection.manager.findOne(Post, params.id as string);
+        const currentUser = req.session.user || null;
+        return {
+            props: {
+                post: JSON.parse(JSON.stringify(post)),
+                currentUser: JSON.parse(JSON.stringify(currentUser || {})),
+                id:params.id,
+            }
+
+        };
+    },
+    {
+        cookieName: "blog",
+        password: process.env.SECRET,
+        // secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
+        cookieOptions: {
+            secure: process.env.NODE_ENV === "production",
+        },
+    },
+)
 
 
 // export const getStaticPaths=async ()=>{
