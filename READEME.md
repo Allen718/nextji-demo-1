@@ -37,3 +37,9 @@ node dist/seed.js
 ```
 
 ## 开发
+##部署
+```angular2html
+yarn install --production=false
+yarn build
+docker run --network=host -p 3200:3200 -d yang/node-web-app
+```
