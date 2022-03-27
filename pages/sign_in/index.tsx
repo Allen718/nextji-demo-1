@@ -1,7 +1,7 @@
 import {useCallback, useState} from "react";
 import axios, {AxiosResponse} from "axios";
-
-import {withIronSessionSsr} from "iron-session/next";
+import {withSessionSsr} from "lib/withSession";
+// import {withIronSessionSsr} from "iron-session/next";
 import {useForm} from "../../hooks/useForm";
 
 
@@ -33,22 +33,22 @@ export default (props: { user: {} }) => {
     );
     const {form, setErrors} = useForm({
         initFormData: {username: '', password: ''},
-        fields:[
+        fields: [
             {
-                label:'用户名',
-                type:'text',
-                key:'username'
+                label: '用户名',
+                type: 'text',
+                key: 'username'
             },
             {
-                label:'密码',
-                type:'password',
-                key:'password'
+                label: '密码',
+                type: 'password',
+                key: 'password'
             }
         ],
         buttons: <button type={"submit"}>登录</button>,
-        submit:{
-            request:formData=>axios.post(`/api/v1/login`,formData),
-            message:'登录成功'
+        submit: {
+            request: formData => axios.post(`/api/v1/login`, formData),
+            message: '登录成功'
         },
     })
     return <div>
@@ -80,7 +80,7 @@ export default (props: { user: {} }) => {
     </div>
 }
 ;
-export const getServerSideProps = withIronSessionSsr(
+export const getServerSideProps = withSessionSsr(
     async function getServerSideProps({req}) {
         const user = req.session.user;
         return {
@@ -88,13 +88,5 @@ export const getServerSideProps = withIronSessionSsr(
                 user: JSON.parse(JSON.stringify(req.session.user || {})),
             },
         };
-    },
-    {
-        cookieName: "blog",
-        password: process.env.SECRET,
-        // secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
-        cookieOptions: {
-            secure: process.env.NODE_ENV === "production",
-        },
-    },
-);
+    }
+    )

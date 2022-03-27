@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react';
 import {GetServerSideProps, NextPage} from "next";
-import {withIronSessionSsr} from "iron-session/next";
+// import {withIronSessionSsr} from "iron-session/next";
 import marked from 'marked';
 import {Post} from '../../src/entity/Post';
 
@@ -11,6 +11,7 @@ import {User} from "../../src/entity/User";
 import Link from 'next/link';
 import axios from "axios";
 import {useRouter} from "next/router";
+import {withSessionSsr} from "../../lib/withSession";
 
 type Props = {
     post: Post,
@@ -66,7 +67,7 @@ const PostShow: NextPage<Props> = (props) => {
     )
 
 };
-export const getServerSideProps = withIronSessionSsr(
+export const getServerSideProps = withSessionSsr(
     async function getServerSideProps({req, params}) {
         const connection = await getDatabaseConnection();
         const post = await connection.manager.findOne(Post, params.id as string);
@@ -79,15 +80,8 @@ export const getServerSideProps = withIronSessionSsr(
             }
 
         };
-    },
-    {
-        cookieName: "blog",
-        password: process.env.SECRET,
-        // secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
-        cookieOptions: {
-            secure: process.env.NODE_ENV === "production",
-        },
-    },
+    }
+
 )
 
 

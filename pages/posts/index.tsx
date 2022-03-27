@@ -1,5 +1,6 @@
 import React from "react"
 import {UAParser} from 'ua-parser-js';
+import {withSessionSsr} from "lib/withSession";
 import qs from 'qs';
 
 import {GetServerSideProps, GetStaticProps, NextPage} from "next";
@@ -80,7 +81,7 @@ const PostsIndex: NextPage<Props> = (props) => {
         </>
     )
 };
-export const getServerSideProps: GetServerSideProps = withIronSessionSsr(async (context) => {
+export const getServerSideProps: GetServerSideProps = withSessionSsr(async (context) => {
         const ua = context.req.headers['user-agent']
         const connection = await getDatabaseConnection()
         const index = context.req.url.indexOf('?');
@@ -107,14 +108,6 @@ export const getServerSideProps: GetServerSideProps = withIronSessionSsr(async (
                 pageSize
             }
         }
-    },
-    {
-        cookieName: "blog",
-        password: process.env.SECRET,
-        // secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
-        cookieOptions: {
-            secure: process.env.NODE_ENV === "production",
-        },
     },
 )
 export default PostsIndex

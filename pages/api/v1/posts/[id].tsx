@@ -5,12 +5,13 @@ import {getDatabaseConnection} from "../../../../lib/getDatabaseConnection";
 
 const updatePost: NextApiHandler = async (req, res) => {
     const connection = await getDatabaseConnection();
-    if(req.method==='POST'){
+    if(req.method==='PATCH'){
     const {content, title, id} = req.body
     const post = await connection.manager.findOne<Post>('posts', id);
     if (post) {
         post.content = content;
         post.title = title
+        console.log(post,'post');
         await connection.manager.save(post)
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
         res.statusCode = 200;

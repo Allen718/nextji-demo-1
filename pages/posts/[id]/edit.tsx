@@ -27,7 +27,6 @@ const EditPost: NextPage<Props> = (props) => {
             message: '编辑成功',
             callback(res) {
                 if (res.status === 200) {
-                    window.alert('提交成功');
                     router.push('/posts');
                 }
             }

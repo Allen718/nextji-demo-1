@@ -41,5 +41,7 @@ node dist/seed.js
 ```angular2html
 yarn install --production=false
 yarn build
+docker build -t fang/node-web-app .
 docker run --network=host -p 3200:3200 -d yang/node-web-app
+ssh blog@dev1 'bash -s' < bin/deploy.sh
 ```
